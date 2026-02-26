@@ -1,260 +1,183 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Code2, Mail, Phone, MapPin, Github, Linkedin, Twitter, Heart, Star, Zap } from 'lucide-react';
+import { Mail, Phone, MapPin, Github, Linkedin, Twitter, Heart, ArrowUp } from 'lucide-react';
 
 const Footer: React.FC = () => {
-  const currentYear = new Date().getFullYear();
+  const year = new Date().getFullYear();
 
-  const socialLinks = [
-    { icon: Github, href: '#', label: 'GitHub', color: 'hover:bg-gray-700' },
-    { icon: Linkedin, href: '#', label: 'LinkedIn', color: 'hover:bg-blue-600' },
-    { icon: Twitter, href: '#', label: 'Twitter', color: 'hover:bg-blue-400' }
+  const socials = [
+    { icon: Github, href: '#', label: 'GitHub', accent: '#e2e8f0' },
+    { icon: Linkedin, href: '#', label: 'LinkedIn', accent: '#0ea5e9' },
+    { icon: Twitter, href: '#', label: 'Twitter', accent: '#38bdf8' },
   ];
 
-  const quickLinks = [
-    { name: 'About', href: '#about' },
-    { name: 'Services', href: '#services' },
-    { name: 'Portfolio', href: '#portfolio' },
-    { name: 'Contact', href: '#contact' }
-  ];
+  const quickLinks = ['About', 'Services', 'Portfolio', 'Contact'];
 
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId.replace('#', ''));
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.6,
-        ease: "easeOut"
-      }
-    }
-  };
+  const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
 
   return (
-    <footer className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white relative overflow-hidden">
-      {/* Background Elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <motion.div
-          className="absolute top-20 left-20 w-32 h-32 bg-gradient-to-br from-primary-500/20 to-accent-500/20 rounded-full"
-          animate={{ 
-            scale: [1, 1.2, 1],
-            rotate: [0, 180, 360]
-          }}
-          transition={{ duration: 20, repeat: Infinity }}
-        />
-        <motion.div
-          className="absolute bottom-20 right-20 w-24 h-24 bg-gradient-to-br from-accent-500/20 to-primary-500/20 rounded-full"
-          animate={{ 
-            y: [0, -20, 0],
-            rotate: [360, 180, 0]
-          }}
-          transition={{ duration: 15, repeat: Infinity }}
-        />
-      </div>
+    <footer className="relative overflow-hidden" style={{ background: '#040710', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+      <div className="noise-overlay" />
+      <div className="absolute inset-0 grid-bg pointer-events-none opacity-50" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative">
-        <motion.div 
-          className="grid md:grid-cols-4 gap-8"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
+      {/* Top gradient line */}
+      <div className="absolute top-0 left-0 right-0 h-[1px]"
+        style={{ background: 'linear-gradient(90deg, transparent 0%, rgba(0,217,245,0.4) 30%, rgba(124,58,237,0.4) 70%, transparent 100%)' }}
+      />
+
+      <motion.div className="absolute pointer-events-none rounded-full"
+        style={{ width: 500, height: 500, bottom: '-30%', left: '-10%', background: 'radial-gradient(circle, rgba(124,58,237,0.06) 0%, transparent 70%)' }}
+        animate={{ scale: [1, 1.1, 1] }} transition={{ duration: 20, repeat: Infinity }}
+      />
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
+
+        {/* Main grid */}
+        <motion.div
+          className="grid md:grid-cols-4 gap-10 mb-12"
+          initial="hidden" whileInView="visible" viewport={{ once: true }}
+          transition={{ staggerChildren: 0.1 }}
         >
-          <motion.div variants={itemVariants} className="md:col-span-2">
-            <motion.div 
-              className="flex items-center space-x-3 mb-6"
-              whileHover={{ scale: 1.05 }}
-              transition={{ type: "spring", stiffness: 400, damping: 25 }}
-            >
-              <div className="relative">
-                <Code2 className="h-10 w-10 text-primary-400" />
-                <motion.div
-                  className="absolute -top-1 -right-1"
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+          {/* Brand */}
+          <motion.div
+            variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6 } } }}
+            className="md:col-span-2 space-y-5"
+          >
+            <motion.button onClick={() => scrollTo('home')} className="flex items-center gap-3 group" whileHover={{ scale: 1.02 }}>
+              <div className="relative w-10 h-10">
+                <motion.div className="absolute inset-0 rounded-xl"
+                  style={{ background: 'linear-gradient(135deg, #00d9f5, #7c3aed)' }}
+                  animate={{ rotate: [0, 360] }} transition={{ duration: 12, repeat: Infinity, ease: 'linear' }}
+                />
+                <div className="absolute inset-[2px] rounded-[10px] flex items-center justify-center"
+                  style={{ background: '#040710' }}
                 >
-                  <Star className="h-4 w-4 text-yellow-400" />
-                </motion.div>
+                  <span className="font-display font-black text-base text-transparent bg-clip-text"
+                    style={{ backgroundImage: 'linear-gradient(135deg,#00d9f5,#7c3aed)' }}>M</span>
+                </div>
               </div>
-              <span className="text-2xl font-display font-bold text-gradient">
-                ManuWebDesigns
-              </span>
-            </motion.div>
-            
-            <motion.p 
-              className="text-gray-300 mb-8 max-w-md leading-relaxed"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-            >
-              Transforming ideas into powerful digital experiences. 
-              Full-stack web development services that drive results and exceed expectations.
-            </motion.p>
-            
-            <motion.div 
-              className="flex space-x-4"
-              variants={containerVariants}
-            >
-              {socialLinks.map((link, index) => {
-                const Icon = link.icon;
-                return (
-                  <motion.a
-                    key={index}
-                    href={link.href}
-                    aria-label={link.label}
-                    variants={itemVariants}
-                    className={`bg-gray-800 p-4 rounded-2xl ${link.color} transition-all duration-300 shadow-lg hover:shadow-xl group`}
-                    whileHover={{ scale: 1.1, y: -5 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <Icon className="h-5 w-5 group-hover:text-white transition-colors" />
-                  </motion.a>
-                );
-              })}
-            </motion.div>
+              <div>
+                <div className="font-display font-black text-white text-lg leading-none">ManuWebDesigns</div>
+                <div style={{ fontFamily:"'DM Mono',monospace", fontSize:'0.65rem', color:'rgba(255,255,255,0.3)', letterSpacing:'0.12em', marginTop:'2px' }}>Full Stack Developer</div>
+              </div>
+            </motion.button>
+
+            <p className="text-sm leading-relaxed max-w-sm" style={{ color: 'rgba(226,232,240,0.4)', fontFamily:"'Cabinet Grotesk',sans-serif" }}>
+              Transforming ideas into powerful digital experiences. Full-stack web development services that drive results and exceed expectations.
+            </p>
+
+            <div className="flex gap-3">
+              {socials.map((s, i) => (
+                <motion.a key={i} href={s.href} aria-label={s.label}
+                  className="w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300"
+                  style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+                  whileHover={{ scale: 1.1, y: -3, borderColor: s.accent, backgroundColor: `${s.accent}12`, color: s.accent }}
+                  whileTap={{ scale: 0.92 }}
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                >
+                  <s.icon className="w-4 h-4" style={{ color: 'rgba(226,232,240,0.5)' }} />
+                </motion.a>
+              ))}
+            </div>
           </motion.div>
 
-          <motion.div variants={itemVariants}>
-            <h3 className="text-xl font-display font-bold mb-6 flex items-center gap-2">
-              <Zap className="h-5 w-5 text-yellow-400" />
+          {/* Quick links */}
+          <motion.div
+            variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6 } } }}
+          >
+            <h3 className="font-display font-bold text-sm text-white mb-5 flex items-center gap-2">
+              <span className="w-4 h-px bg-gradient-to-r from-cyan-400 to-transparent" />
               Quick Links
             </h3>
             <ul className="space-y-3">
-              {quickLinks.map((link, index) => (
-                <motion.li 
-                  key={index}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
+              {quickLinks.map((link, i) => (
+                <motion.li key={link}
+                  initial={{ opacity: 0, x: -12 }} whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }} transition={{ delay: i * 0.08 }}
                 >
                   <motion.button
-                    onClick={() => scrollToSection(link.href)}
-                    className="text-gray-300 hover:text-white transition-colors group flex items-center gap-2"
-                    whileHover={{ x: 5 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                    onClick={() => scrollTo(link.toLowerCase())}
+                    className="group flex items-center gap-2.5 text-sm transition-colors"
+                    style={{ color: 'rgba(226,232,240,0.4)', fontFamily:"'Cabinet Grotesk',sans-serif" }}
+                    whileHover={{ x: 6 }}
                   >
-                    <motion.div
-                      className="w-2 h-2 bg-primary-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                      whileHover={{ scale: 1.5 }}
+                    <motion.span
+                      className="w-1 h-1 rounded-full flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                      style={{ background: '#00d9f5', boxShadow: '0 0 6px #00d9f5' }}
                     />
-                    {link.name}
+                    <span className="group-hover:text-white transition-colors">{link}</span>
                   </motion.button>
                 </motion.li>
               ))}
             </ul>
           </motion.div>
 
-          <motion.div variants={itemVariants}>
-            <h3 className="text-xl font-display font-bold mb-6 flex items-center gap-2">
-              <Mail className="h-5 w-5 text-primary-400" />
-              Contact Info
+          {/* Contact */}
+          <motion.div
+            variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6 } } }}
+          >
+            <h3 className="font-display font-bold text-sm text-white mb-5 flex items-center gap-2">
+              <span className="w-4 h-px bg-gradient-to-r from-cyan-400 to-transparent" />
+              Contact
             </h3>
             <div className="space-y-4">
-              <motion.div 
-                className="flex items-center gap-3 group"
-                whileHover={{ x: 5 }}
-                transition={{ type: "spring", stiffness: 400, damping: 25 }}
-              >
-                <motion.div
-                  className="p-2 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg"
-                  whileHover={{ rotate: 360 }}
-                  transition={{ duration: 0.6 }}
+              {[
+                { icon: Mail, value: 'manuwebdesigns@gmail.com', href: 'mailto:manuwebdesigns@gmail.com', accent: '#00d9f5' },
+                { icon: Phone, value: '+254 714 749 123', href: 'tel:+254 714 749 123', accent: '#10b981' },
+                { icon: MapPin, value: 'Available Worldwide', href: '#', accent: '#7c3aed' },
+              ].map((item, i) => (
+                <motion.a key={i} href={item.href}
+                  initial={{ opacity: 0, x: -12 }} whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }} transition={{ delay: i * 0.1 }}
+                  whileHover={{ x: 4 }}
+                  className="flex items-center gap-3 group"
                 >
-                  <Mail className="h-4 w-4 text-white" />
-                </motion.div>
-                <motion.a 
-                  href="mailto:hello@manuwebdesigns.com" 
-                  className="text-gray-300 hover:text-white transition-colors"
-                  whileHover={{ scale: 1.05 }}
-                >
-                  hello@manuwebdesigns.com
+                  <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
+                    style={{ background: `${item.accent}15`, border: `1px solid ${item.accent}20`, color: item.accent }}
+                  >
+                    <item.icon className="w-3.5 h-3.5" />
+                  </div>
+                  <span className="text-xs transition-colors group-hover:text-white"
+                    style={{ color: 'rgba(226,232,240,0.45)', fontFamily:"'Cabinet Grotesk',sans-serif" }}>
+                    {item.value}
+                  </span>
                 </motion.a>
-              </motion.div>
-              
-              <motion.div 
-                className="flex items-center gap-3 group"
-                whileHover={{ x: 5 }}
-                transition={{ type: "spring", stiffness: 400, damping: 25 }}
-              >
-                <motion.div
-                  className="p-2 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg"
-                  whileHover={{ rotate: 360 }}
-                  transition={{ duration: 0.6 }}
-                >
-                  <Phone className="h-4 w-4 text-white" />
-                </motion.div>
-                <motion.a 
-                  href="tel:+15551234567" 
-                  className="text-gray-300 hover:text-white transition-colors"
-                  whileHover={{ scale: 1.05 }}
-                >
-                  +1 (555) 123-4567
-                </motion.a>
-              </motion.div>
-              
-              <motion.div 
-                className="flex items-center gap-3 group"
-                whileHover={{ x: 5 }}
-                transition={{ type: "spring", stiffness: 400, damping: 25 }}
-              >
-                <motion.div
-                  className="p-2 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg"
-                  whileHover={{ rotate: 360 }}
-                  transition={{ duration: 0.6 }}
-                >
-                  <MapPin className="h-4 w-4 text-white" />
-                </motion.div>
-                <span className="text-gray-300">Available Worldwide</span>
-              </motion.div>
+              ))}
             </div>
           </motion.div>
         </motion.div>
 
-        <motion.div 
-          className="border-t border-gray-700 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.5 }}
+        {/* Bottom bar */}
+        <motion.div
+          className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8"
+          style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}
+          initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.4 }}
         >
-          <motion.p 
-            className="text-gray-400 text-sm"
-            whileHover={{ scale: 1.05 }}
-          >
-            © {currentYear} ManuWebDesigns. All rights reserved.
-          </motion.p>
-          <motion.p 
-            className="text-gray-400 text-sm mt-4 md:mt-0 flex items-center gap-2"
-            whileHover={{ scale: 1.05 }}
-          >
-            Made with 
-            <motion.span
-              animate={{ scale: [1, 1.2, 1] }}
-              transition={{ duration: 1, repeat: Infinity }}
-            >
-              <Heart className="h-4 w-4 text-red-500" />
+          <p style={{ fontFamily:"'DM Mono',monospace", fontSize:'0.72rem', color:'rgba(255,255,255,0.25)' }}>
+            © {year} ManuWebDesigns — All rights reserved
+          </p>
+          <div className="flex items-center gap-2">
+            <span style={{ fontFamily:"'DM Mono',monospace", fontSize:'0.72rem', color:'rgba(255,255,255,0.25)' }}>Made with</span>
+            <motion.span animate={{ scale: [1, 1.25, 1] }} transition={{ duration: 1.2, repeat: Infinity }}>
+              <Heart className="w-3.5 h-3.5" style={{ color: '#f43f5e' }} />
             </motion.span>
-            by Manu
-          </motion.p>
+            <span style={{ fontFamily:"'DM Mono',monospace", fontSize:'0.72rem', color:'rgba(255,255,255,0.25)' }}>by Manu</span>
+          </div>
+
+          {/* Back to top */}
+          <motion.button
+            onClick={() => scrollTo('home')}
+            className="w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-300"
+            style={{ background: 'rgba(0,217,245,0.1)', border: '1px solid rgba(0,217,245,0.2)', color: '#00d9f5' }}
+            whileHover={{ scale: 1.1, y: -3, boxShadow: '0 0 16px rgba(0,217,245,0.3)' }}
+            whileTap={{ scale: 0.92 }}
+          >
+            <ArrowUp className="w-4 h-4" />
+          </motion.button>
         </motion.div>
       </div>
     </footer>
