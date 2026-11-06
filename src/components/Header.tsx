@@ -25,7 +25,18 @@ const Header: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const scrollToSection = (id: string) => {
+  useEffect(() => {
+    if (!isMenuOpen) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setIsMenuOpen(false); };
+    const onResize = () => { if (window.innerWidth >= 1024) setIsMenuOpen(false); };
+    window.addEventListener('keydown', onKey);
+    window.addEventListener('resize', onResize);
+    return () => { window.removeEventListener('keydown', onKey); window.removeEventListener('resize', onResize); };
+  }, [isMenuOpen]);
+
+  const scrollToSection = (id: string, e?: React.MouseEvent) => {
+    e?.preventDefault();
+    history.replaceState(null, '', id === 'home' ? window.location.pathname : `#${id}`);
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
     setIsMenuOpen(false);
   };
@@ -50,6 +61,20 @@ const Header: React.FC = () => {
         }}
       />
 
+      {/* Tap-outside overlay for the mobile menu */}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div
+            key="overlay"
+            aria-hidden="true"
+            className="fixed inset-0 z-40 lg:hidden"
+            style={{ background: 'rgba(4,7,16,0.55)', backdropFilter: 'blur(2px)' }}
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            onClick={() => setIsMenuOpen(false)}
+          />
+        )}
+      </AnimatePresence>
+
       <motion.header
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -66,16 +91,15 @@ const Header: React.FC = () => {
             {/* Logo */}
             <motion.button
               onClick={() => scrollToSection('home')}
+              aria-label="ManuWebDesigns, back to top"
               className="flex items-center gap-3 group"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.97 }}
             >
               <div className="relative w-9 h-9">
-                <motion.div
+                <div
                   className="absolute inset-0 rounded-lg"
-                  style={{ background: 'linear-gradient(135deg, #00d9f5, #7c3aed)' }}
-                  animate={{ rotate: [0, 360] }}
-                  transition={{ duration: 12, repeat: Infinity, ease: 'linear' }}
+                  style={{ background: 'linear-gradient(135deg, #00d9f5, #7c3aed)', boxShadow: '0 0 18px rgba(0,217,245,0.25)' }}
                 />
                 <div
                   className="absolute inset-[2px] rounded-[6px] flex items-center justify-center"
@@ -89,17 +113,19 @@ const Header: React.FC = () => {
               </div>
               <div className="flex flex-col leading-none">
                 <span className="font-display font-black text-base text-white tracking-tight">Manu</span>
-                <span className="font-mono-custom text-[10px] text-white/30 tracking-widest">WebDesigns</span>
+                <span className="font-mono-custom text-[10px] text-white/50 tracking-widest">WebDesigns</span>
               </div>
             </motion.button>
 
             {/* Desktop Nav */}
-            <nav className="hidden md:flex items-center gap-1">
+            <nav aria-label="Main" className="hidden lg:flex items-center gap-1">
               {navItems.map((item, i) => (
-                <motion.button
+                <motion.a
                   key={item.id}
-                  onClick={() => scrollToSection(item.id)}
-                  className="relative px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors group"
+                  href={`#${item.id}`}
+                  aria-current={activeSection === item.id ? 'page' : undefined}
+                  onClick={(e) => scrollToSection(item.id, e)}
+                  className="relative px-4 xl:px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors group"
                   initial={{ opacity: 0, y: -16 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.08 + 0.2 }}
@@ -119,7 +145,7 @@ const Header: React.FC = () => {
                     />
                   )}
                   <span className="relative z-10">{item.name}</span>
-                </motion.button>
+                </motion.a>
               ))}
 
               <motion.button
@@ -141,7 +167,10 @@ const Header: React.FC = () => {
             {/* Mobile Hamburger */}
             <motion.button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden w-10 h-10 rounded-xl flex items-center justify-center border border-white/10 text-white/70 hover:text-white hover:border-white/20 transition-colors"
+              aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={isMenuOpen}
+              aria-controls="mobile-menu"
+              className="lg:hidden w-10 h-10 rounded-xl flex items-center justify-center border border-white/10 text-white/70 hover:text-white hover:border-white/20 transition-colors"
               whileTap={{ scale: 0.92 }}
             >
               <AnimatePresence mode="wait">
@@ -167,17 +196,19 @@ const Header: React.FC = () => {
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              className="md:hidden overflow-hidden border-t border-white/[0.06] bg-[#080c14]/95 backdrop-blur-2xl"
+              id="mobile-menu"
+              className="lg:hidden overflow-hidden border-t border-white/[0.06] bg-[#080c14]/95 backdrop-blur-2xl"
             >
-              <nav className="px-4 py-4 space-y-1">
+              <nav aria-label="Mobile" className="px-4 py-4 space-y-1">
                 {navItems.map((item, i) => (
-                  <motion.button
+                  <motion.a
                     key={item.id}
-                    onClick={() => scrollToSection(item.id)}
+                    href={`#${item.id}`}
+                    onClick={(e) => scrollToSection(item.id, e)}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.06 }}
-                    className="w-full text-left px-4 py-3 rounded-xl text-sm font-semibold transition-colors"
+                    className="block w-full text-left px-4 py-3 rounded-xl text-sm font-semibold transition-colors"
                     style={{
                       color: activeSection === item.id ? '#00d9f5' : 'rgba(226,232,240,0.65)',
                       background: activeSection === item.id ? 'rgba(0,217,245,0.07)' : 'transparent',
@@ -185,7 +216,7 @@ const Header: React.FC = () => {
                     }}
                   >
                     {item.name}
-                  </motion.button>
+                  </motion.a>
                 ))}
                 <div className="pt-2">
                   <button onClick={() => scrollToSection('contact')} className="w-full btn-primary justify-center">

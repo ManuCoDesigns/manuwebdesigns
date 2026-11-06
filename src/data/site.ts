@@ -30,6 +30,8 @@ export type Project = {
   privateNote?: string;
   domain: string;
   featured: boolean;
+  /** Optional real screenshot in /public/images/projects (16:10 works best). Falls back to an illustrated preview. */
+  image?: string;
 };
 
 export const projects: Project[] = [

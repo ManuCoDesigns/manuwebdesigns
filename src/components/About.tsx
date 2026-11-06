@@ -115,14 +115,11 @@ const About: React.FC = () => {
             className="flex justify-center"
           >
             <div className="relative w-full max-w-sm">
-              {/* Rotating border ring */}
-              <motion.div
-                className="absolute -inset-[2px] rounded-3xl"
-                animate={{ rotate: [0, 360] }}
-                transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+              {/* Gradient border */}
+              <div
+                className="absolute -inset-[1.5px] rounded-3xl"
                 style={{
-                  background: 'conic-gradient(from 0deg, #00d9f5, #7c3aed, #10b981, #f59e0b, #00d9f5)',
-                  opacity: 0.6,
+                  background: 'linear-gradient(145deg, rgba(0,217,245,0.65), rgba(124,58,237,0.45) 50%, rgba(16,185,129,0.55))',
                 }}
               />
 
@@ -130,24 +127,17 @@ const About: React.FC = () => {
                 style={{ background: 'var(--c-surface)', border: '1px solid rgba(255,255,255,0.06)' }}
               >
                 {/* Avatar */}
-                <div className="relative w-28 h-28 mx-auto mb-6">
-                  <motion.div
-                    className="absolute inset-0 rounded-full"
-                    style={{ background: 'linear-gradient(135deg, #00d9f5, #7c3aed)' }}
-                    animate={{ rotate: [0, 360] }} transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
+                <div className="relative w-32 h-32 mx-auto mb-6">
+                  <div className="absolute -inset-[3px] rounded-full"
+                    style={{ background: 'conic-gradient(from 180deg, #00d9f5, #7c3aed, #10b981, #00d9f5)' }}
                   />
-                  <div className="absolute inset-[3px] rounded-full flex items-center justify-center"
-                    style={{ background: 'var(--c-surface2)' }}
-                  >
-                    <motion.span
-                      className="font-display font-black text-5xl text-transparent bg-clip-text"
-                      style={{ backgroundImage: 'linear-gradient(135deg,#00d9f5,#7c3aed)' }}
-                      animate={{ scale: [1, 1.05, 1] }} transition={{ duration: 4, repeat: Infinity }}
-                    >M</motion.span>
-                  </div>
-                  {/* Online badge */}
-                  <div className="absolute bottom-1 right-1 w-5 h-5 rounded-full flex items-center justify-center"
-                    style={{ background: 'var(--c-surface)', border: '2px solid var(--c-surface)' }}
+                  <img src="/images/manu-avatar.webp" width={360} height={360} loading="lazy" decoding="async"
+                    alt="Portrait of Manu"
+                    className="relative w-full h-full rounded-full object-cover"
+                    style={{ border: '3px solid var(--c-surface)' }}
+                  />
+                  <div className="absolute bottom-1.5 right-1.5 w-5 h-5 rounded-full flex items-center justify-center"
+                    style={{ background: 'var(--c-surface)' }} title="Available for projects"
                   >
                     <span className="glow-dot w-2.5 h-2.5" />
                   </div>
@@ -158,23 +148,13 @@ const About: React.FC = () => {
                   style={{ backgroundImage: 'linear-gradient(135deg,#00d9f5,#7c3aed)' }}>
                   Full Stack Developer · Tech Lead
                 </p>
-                <p style={{ fontFamily:"'DM Mono',monospace", fontSize:'0.72rem', color:'rgba(255,255,255,0.3)' }}>
-                  Building the web, one line at a time
+                <p style={{ fontFamily:"'DM Mono',monospace", fontSize:'0.72rem', color:'rgba(255,255,255,0.5)' }}>
+                  Founder, ManuWebDesigns
                 </p>
 
-                {/* Stars */}
-                <div className="flex justify-center gap-1.5 my-5">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <motion.svg key={i} viewBox="0 0 24 24" className="w-4 h-4"
-                      initial={{ opacity: 0, scale: 0, rotate: -30 }}
-                      whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: 0.5 + i * 0.08, type: 'spring' }}
-                    >
-                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
-                        fill="#f59e0b" stroke="#f59e0b" strokeWidth="1" />
-                    </motion.svg>
-                  ))}
+                <div className="flex items-center justify-center gap-2 my-5 text-xs" style={{ color: 'rgba(226,232,240,0.55)' }}>
+                  <span className="w-1.5 h-1.5 rounded-full" style={{ background: '#10b981' }} />
+                  Bomet, Kenya · Remote-friendly
                 </div>
 
                 {/* Tags */}
@@ -188,7 +168,7 @@ const About: React.FC = () => {
               {/* Floating corner icons */}
               <motion.div
                 className="absolute -top-4 -right-4 w-14 h-14 rounded-2xl flex items-center justify-center shadow-2xl"
-                animate={{ rotate: [0, 360], y: [0, -8, 0] }}
+                animate={{ y: [0, -8, 0] }}
                 transition={{ rotate: { duration: 9, repeat: Infinity, ease: 'linear' }, y: { duration: 3, repeat: Infinity } }}
                 style={{ background: 'linear-gradient(135deg, #f59e0b, #f97316)', boxShadow: '0 0 20px rgba(245,158,11,0.4)' }}
               >
@@ -196,7 +176,7 @@ const About: React.FC = () => {
               </motion.div>
               <motion.div
                 className="absolute -bottom-4 -left-4 w-12 h-12 rounded-2xl flex items-center justify-center shadow-2xl"
-                animate={{ rotate: [360, 0], x: [0, 8, 0] }}
+                animate={{ x: [0, 8, 0] }}
                 transition={{ rotate: { duration: 7, repeat: Infinity, ease: 'linear' }, x: { duration: 4, repeat: Infinity } }}
                 style={{ background: 'linear-gradient(135deg, #10b981, #00d9f5)', boxShadow: '0 0 20px rgba(16,185,129,0.4)' }}
               >
@@ -237,7 +217,7 @@ const About: React.FC = () => {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 + 0.4, type: 'spring' }}
               >{stat.value}</motion.div>
-              <div className="text-sm font-semibold" style={{ color: 'rgba(226,232,240,0.45)', fontFamily:"'Syne',sans-serif" }}>{stat.label}</div>
+              <div className="text-sm font-semibold" style={{ color: 'rgba(226,232,240,0.58)', fontFamily:"'Syne',sans-serif" }}>{stat.label}</div>
             </motion.div>
           ))}
         </motion.div>

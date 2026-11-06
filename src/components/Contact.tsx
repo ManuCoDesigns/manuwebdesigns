@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import emailjs from "@emailjs/browser";
 import { contact, socials } from "../data/site";
@@ -8,6 +8,8 @@ const Contact: React.FC = () => {
   const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
   const [focused, setFocused] = useState<string | null>(null);
+  const [honeypot, setHoneypot] = useState('');
+  const lastSentRef = useRef(0);
   const isSubmitted = status === 'sent';
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
@@ -23,6 +25,12 @@ const Contact: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Bots fill the hidden field; quietly pretend success.
+    if (honeypot) { setStatus('sent'); return; }
+
+    // Simple client-side cooldown to stop repeated submissions.
+    if (Date.now() - lastSentRef.current < 30_000) { setStatus('error'); return; }
+
     // No EmailJS keys configured: fall back to the visitor's mail app.
     if (!serviceId || !templateId || !publicKey) {
       window.location.href = `mailto:${contact.email}?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(composedMessage())}`;
@@ -32,6 +40,7 @@ const Contact: React.FC = () => {
     setStatus('sending');
     try {
       await emailjs.send(serviceId, templateId, { ...formData }, { publicKey });
+      lastSentRef.current = Date.now();
       setStatus('sent');
       setFormData({ name: '', email: '', subject: '', message: '' });
       setTimeout(() => setStatus('idle'), 4000);
@@ -144,7 +153,7 @@ const Contact: React.FC = () => {
                     <info.icon className="w-5 h-5" />
                   </motion.div>
                   <div>
-                    <div style={{ fontFamily:"'DM Mono',monospace", fontSize:'0.68rem', color:'rgba(255,255,255,0.3)', textTransform:'uppercase', letterSpacing:'0.12em' }}>{info.label}</div>
+                    <div style={{ fontFamily:"'DM Mono',monospace", fontSize:'0.68rem', color:'rgba(255,255,255,0.5)', textTransform:'uppercase', letterSpacing:'0.12em' }}>{info.label}</div>
                     <div className="font-semibold text-sm mt-0.5 transition-colors" style={{ color: 'rgba(226,232,240,0.75)', fontFamily:"'Cabinet Grotesk',sans-serif" }}>{info.value}</div>
                   </div>
                 </motion.a>
@@ -205,11 +214,17 @@ const Contact: React.FC = () => {
                 </div>
                 <div>
                   <h3 className="font-display font-bold text-lg text-white">Start Your Project</h3>
-                  <p style={{ fontFamily:"'DM Mono',monospace", fontSize:'0.68rem', color:'rgba(255,255,255,0.3)' }}>Usually respond within 24h</p>
+                  <p style={{ fontFamily:"'DM Mono',monospace", fontSize:'0.68rem', color:'rgba(255,255,255,0.5)' }}>Usually respond within 24h</p>
                 </div>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-5">
+                {/* Honeypot: hidden from people, visible to bots */}
+                <div aria-hidden="true" style={{ position: 'absolute', left: '-10000px', width: 1, height: 1, overflow: 'hidden' }}>
+                  <label htmlFor="f-company">Company</label>
+                  <input id="f-company" name="company" type="text" tabIndex={-1} autoComplete="off"
+                    value={honeypot} onChange={e => setHoneypot(e.target.value)} />
+                </div>
                 <div className="grid sm:grid-cols-2 gap-4">
                   {(['name', 'email'] as const).map((field) => (
                     <div key={field}>
@@ -220,6 +235,8 @@ const Contact: React.FC = () => {
                         type={field === 'email' ? 'email' : 'text'}
                         id={`f-${field}`} name={field} value={formData[field]}
                         onChange={handleChange} required
+                        maxLength={field === 'name' ? 80 : 120}
+                        autoComplete={field === 'name' ? 'name' : 'email'}
                         placeholder={field === 'name' ? 'Your name' : 'your@email.com'}
                         style={inputStyle(field)}
                         onFocus={() => setFocused(field)}
@@ -235,7 +252,7 @@ const Contact: React.FC = () => {
                   </label>
                   <input
                     type="text" id="f-subject" name="subject" value={formData.subject}
-                    onChange={handleChange} required placeholder="School system, website, payments…"
+                    onChange={handleChange} required maxLength={120} placeholder="School system, website, payments…"
                     style={inputStyle('subject')}
                     onFocus={() => setFocused('subject')}
                     onBlur={() => setFocused(null)}
@@ -248,7 +265,7 @@ const Contact: React.FC = () => {
                   </label>
                   <textarea
                     id="f-message" name="message" rows={5} value={formData.message}
-                    onChange={handleChange} required
+                    onChange={handleChange} required minLength={10} maxLength={3000}
                     placeholder="Tell me about your project vision, goals, and requirements..."
                     style={{ ...inputStyle('message'), resize: 'none' }}
                     onFocus={() => setFocused('message')}
@@ -286,7 +303,7 @@ const Contact: React.FC = () => {
                 <div aria-live="polite" className="min-h-[1.25rem] text-sm text-center">
                   {status === 'error' && (
                     <span style={{ color: '#f87171' }}>
-                      Couldn't send right now. Please try WhatsApp or email {contact.email}.
+                      Couldn't send just now (or you sent one moments ago). Please try WhatsApp or email {contact.email}.
                     </span>
                   )}
                   {status === 'sent' && <span style={{ color: '#34d399' }}>Thanks! I'll reply within 24 hours.</span>}

@@ -74,10 +74,10 @@ const Footer: React.FC = () => {
               </div>
               <div className="text-left">
                 <div className="font-display font-black text-white text-lg leading-none">ManuWebDesigns</div>
-                <div style={{ ...mono, fontSize: '0.65rem', color: 'rgba(255,255,255,0.35)', letterSpacing: '0.12em', marginTop: 3 }}>FULL-STACK DEVELOPER</div>
+                <div style={{ ...mono, fontSize: '0.65rem', color: 'rgba(255,255,255,0.5)', letterSpacing: '0.12em', marginTop: 3 }}>FULL-STACK DEVELOPER</div>
               </div>
             </button>
-            <p className="text-sm leading-relaxed max-w-sm" style={{ color: 'rgba(226,232,240,0.45)' }}>
+            <p className="text-sm leading-relaxed max-w-sm" style={{ color: 'rgba(226,232,240,0.58)' }}>
               School systems, data platforms and fast, mobile-first websites, built in Kenya for clients anywhere.
             </p>
             <div className="flex gap-2.5">
@@ -94,7 +94,7 @@ const Footer: React.FC = () => {
 
           {/* Navigate */}
           <div>
-            <h4 style={{ ...mono, fontSize: '0.7rem', color: 'rgba(255,255,255,0.35)', letterSpacing: '0.14em' }} className="uppercase mb-4">Navigate</h4>
+            <h4 style={{ ...mono, fontSize: '0.7rem', color: 'rgba(255,255,255,0.5)', letterSpacing: '0.14em' }} className="uppercase mb-4">Navigate</h4>
             <ul className="flex flex-wrap md:flex-col gap-x-5 gap-y-2.5">
               {nav.map(n => (
                 <li key={n.id}>
@@ -108,7 +108,7 @@ const Footer: React.FC = () => {
 
           {/* Contact */}
           <div>
-            <h4 style={{ ...mono, fontSize: '0.7rem', color: 'rgba(255,255,255,0.35)', letterSpacing: '0.14em' }} className="uppercase mb-4">Contact</h4>
+            <h4 style={{ ...mono, fontSize: '0.7rem', color: 'rgba(255,255,255,0.5)', letterSpacing: '0.14em' }} className="uppercase mb-4">Contact</h4>
             <ul className="space-y-3 text-sm">
               <li>
                 <a href={links.email} className="group inline-flex items-center gap-2.5 transition-colors hover:text-white" style={{ color: 'rgba(226,232,240,0.6)' }}>
@@ -133,11 +133,11 @@ const Footer: React.FC = () => {
 
         {/* Bottom bar */}
         <div className="flex flex-col-reverse sm:flex-row items-center justify-between gap-4 pt-6" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-          <p style={{ ...mono, fontSize: '0.7rem', color: 'rgba(255,255,255,0.3)' }} className="text-center sm:text-left">
+          <p style={{ ...mono, fontSize: '0.7rem', color: 'rgba(255,255,255,0.5)' }} className="text-center sm:text-left">
             © {year} ManuWebDesigns · Bomet, Kenya
           </p>
           <div className="flex items-center gap-4">
-            <span className="hidden sm:inline-flex items-center gap-1.5" style={{ ...mono, fontSize: '0.7rem', color: 'rgba(255,255,255,0.3)' }}>
+            <span className="hidden sm:inline-flex items-center gap-1.5" style={{ ...mono, fontSize: '0.7rem', color: 'rgba(255,255,255,0.5)' }}>
               <Code2 className="w-3.5 h-3.5" style={{ color: '#00d9f5' }} />
               Designed & built by Manu
             </span>

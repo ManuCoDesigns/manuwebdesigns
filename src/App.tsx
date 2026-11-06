@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Header from './components/Header';
 import Hero from './components/Hero';
@@ -9,6 +10,14 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 
 function App() {
+  // Deep links like /#portfolio: scroll once the page has rendered.
+  useEffect(() => {
+    const id = decodeURIComponent(window.location.hash.slice(1));
+    if (!id) return;
+    const t = setTimeout(() => document.getElementById(id)?.scrollIntoView(), 300);
+    return () => clearTimeout(t);
+  }, []);
+
   return (
     <motion.main
       className="min-h-screen"

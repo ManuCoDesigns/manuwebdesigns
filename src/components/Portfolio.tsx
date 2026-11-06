@@ -23,6 +23,10 @@ const ProjectVisual: React.FC<{ project: Project; compact?: boolean }> = ({ proj
             {project.domain}
           </span>
         </div>
+        {project.image ? (
+          <img src={project.image} alt={`Screenshot of ${project.title}`} loading="lazy" decoding="async"
+            className="w-full h-full object-cover object-top" />
+        ) : (
         <div className={`flex ${compact ? 'gap-2 p-3' : 'gap-3 p-4'} h-full`}>
           <div className="w-1/4 space-y-2 hidden sm:block">
             {[0.9, 0.6, 0.75, 0.5, 0.65].map((w, i) => (
@@ -52,6 +56,7 @@ const ProjectVisual: React.FC<{ project: Project; compact?: boolean }> = ({ proj
             )}
           </div>
         </div>
+        )}
       </div>
     </div>
   );
