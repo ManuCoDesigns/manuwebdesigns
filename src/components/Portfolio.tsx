@@ -1,6 +1,7 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { ExternalLink, Github, ArrowRight, Zap, Globe, Lock, Check } from 'lucide-react';
+import React, { useState } from 'react';
+import Lightbox from './Lightbox';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ExternalLink, Github, ArrowRight, Zap, Globe, Lock, Check, Images } from 'lucide-react';
 import { projects, socials, type Project } from '../data/site';
 
 /** Lightweight illustrated "browser window" preview, so no stock photos are needed. */
@@ -23,9 +24,9 @@ const ProjectVisual: React.FC<{ project: Project; compact?: boolean }> = ({ proj
             {project.domain}
           </span>
         </div>
-        {project.image ? (
-          <img src={project.image} alt={`Screenshot of ${project.title}`} loading="lazy" decoding="async"
-            className="w-full h-full object-cover object-top" />
+        {project.cover ? (
+          <img src={project.cover} alt={`Screenshot of ${project.title}`} loading="lazy" decoding="async"
+            width={800} height={500} className="w-full h-full object-cover object-top" />
         ) : (
         <div className={`flex ${compact ? 'gap-2 p-3' : 'gap-3 p-4'} h-full`}>
           <div className="w-1/4 space-y-2 hidden sm:block">
@@ -58,12 +59,28 @@ const ProjectVisual: React.FC<{ project: Project; compact?: boolean }> = ({ proj
         </div>
         )}
       </div>
+      {project.coverPhone && !compact && (
+        <div className="absolute right-3 sm:right-5 bottom-3 sm:bottom-5 w-[22%] min-w-[78px] max-w-[130px] rounded-[16px] p-[3px] hidden sm:block"
+          style={{ background: '#0b0f17', border: `1px solid ${a}55`, boxShadow: '0 20px 40px -10px rgba(0,0,0,0.8)' }}
+        >
+          <img src={project.coverPhone} alt="" loading="lazy" decoding="async"
+            className="w-full aspect-[9/19] object-cover object-top rounded-[13px]" />
+        </div>
+      )}
     </div>
   );
 };
 
-const ProjectLinks: React.FC<{ project: Project }> = ({ project }) => (
+const ProjectLinks: React.FC<{ project: Project; onGallery?: () => void }> = ({ project, onGallery }) => (
   <div className="flex flex-wrap gap-3">
+    {project.gallery && onGallery && (
+      <motion.button type="button" onClick={onGallery}
+        className="btn-outline text-sm py-2.5 px-5" whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.96 }}
+        style={{ borderColor: `${project.accent}55` }}
+      >
+        <Images className="w-4 h-4" style={{ color: project.accent }} /><span>Screenshots ({project.gallery.length})</span>
+      </motion.button>
+    )}
     {project.liveUrl && (
       <motion.a href={project.liveUrl} target="_blank" rel="noopener noreferrer"
         className="btn-primary text-sm py-2.5 px-5" whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.96 }}
@@ -89,6 +106,7 @@ const ProjectLinks: React.FC<{ project: Project }> = ({ project }) => (
 );
 
 const Portfolio: React.FC = () => {
+  const [open, setOpen] = useState<{ project: Project; index: number } | null>(null);
   const featured = projects.filter(p => p.featured);
   const others = projects.filter(p => !p.featured);
 
@@ -129,7 +147,17 @@ const Portfolio: React.FC = () => {
                 />
                 <div className={`flex flex-col ${isEven ? 'lg:flex-row' : 'lg:flex-row-reverse'}`}>
                   <div className="lg:w-1/2 relative aspect-[16/10] lg:aspect-auto" style={{ minHeight: 300 }}>
-                    <ProjectVisual project={project} />
+                    {project.gallery ? (
+                      <button type="button" onClick={() => setOpen({ project, index: 0 })}
+                        aria-label={`View ${project.title} screenshots`}
+                        className="absolute inset-0 w-full h-full cursor-zoom-in group/visual"
+                      >
+                        <ProjectVisual project={project} />
+                        <span className="absolute top-4 right-4 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold backdrop-blur-md opacity-90 group-hover/visual:opacity-100 transition-opacity"
+                          style={{ background: 'rgba(8,12,20,0.7)', border: '1px solid rgba(255,255,255,0.15)', color: '#fff' }}
+                        ><Images className="w-3.5 h-3.5" /> {project.gallery.length} screenshots</span>
+                      </button>
+                    ) : <ProjectVisual project={project} />}
                     <div className="absolute bottom-4 left-4 px-3 py-1.5 rounded-full backdrop-blur-sm font-mono-custom"
                       style={{ background: `${project.accent}25`, border: `1px solid ${project.accent}40`, color: project.accent, fontSize: '0.68rem', letterSpacing: '0.08em' }}
                     >{project.category}</div>
@@ -156,7 +184,7 @@ const Portfolio: React.FC = () => {
                     <div className="flex flex-wrap gap-2 mb-7">
                       {project.technologies.map(tech => <span key={tech} className="tag-pill">{tech}</span>)}
                     </div>
-                    <ProjectLinks project={project} />
+                    <ProjectLinks project={project} onGallery={project.gallery ? () => setOpen({ project, index: 0 }) : undefined} />
                   </div>
                 </div>
               </motion.article>
@@ -228,6 +256,19 @@ const Portfolio: React.FC = () => {
           </button>
         </motion.div>
       </div>
+
+      <AnimatePresence>
+        {open && open.project.gallery && (
+          <Lightbox
+            key={open.project.slug}
+            title={open.project.title}
+            shots={open.project.gallery}
+            startIndex={open.index}
+            accent={open.project.accent}
+            onClose={() => setOpen(null)}
+          />
+        )}
+      </AnimatePresence>
     </section>
   );
 };

@@ -15,6 +15,15 @@ export const socials = {
   email: `mailto:${contact.email}`,
 };
 
+export type Shot = {
+  src: string;
+  caption: string;
+  kind: 'desktop' | 'phone';
+};
+
+const D = (name: string, caption: string): Shot => ({ src: `/images/projects/${name}.webp`, caption, kind: 'desktop' });
+const P = (name: string, caption: string): Shot => ({ src: `/images/projects/${name}.webp`, caption, kind: 'phone' });
+
 export type Project = {
   slug: string;
   title: string;
@@ -30,14 +39,18 @@ export type Project = {
   privateNote?: string;
   domain: string;
   featured: boolean;
-  /** Optional real screenshot in /public/images/projects (16:10 works best). Falls back to an illustrated preview. */
-  image?: string;
+  /** Card cover: small 16:10 screenshot (falls back to an illustrated preview). */
+  cover?: string;
+  /** Optional phone screenshot shown overlapping the cover. */
+  coverPhone?: string;
+  /** Screenshots for the lightbox gallery. */
+  gallery?: Shot[];
 };
 
 export const projects: Project[] = [
   {
     slug: 'cbe-pro',
-    title: "St. Mary's CBE Pro",
+    title: 'CBE Pro',
     tagline: 'School management SaaS for Kenyan CBE schools',
     description:
       'An end-to-end school system I architected and built solo. It replaced paper marks, spreadsheets and mail-merged report forms with one platform that teachers, administrators and parents use daily, mostly from their phones.',
@@ -49,9 +62,19 @@ export const projects: Project[] = [
     technologies: ['React', 'TypeScript', 'Vite', 'Tailwind', 'Supabase'],
     category: 'EdTech · SaaS',
     accent: '#10b981',
-    liveUrl: 'https://stmaryscbepro.vercel.app',
-    domain: 'stmaryscbepro.vercel.app',
+    privateNote: 'Live at a partner school · demo on request',
+    domain: 'cbe-pro · school portal',
     featured: true,
+    cover: '/images/projects/cbe-teacher-marks-sm.webp',
+    coverPhone: '/images/projects/cbe-parent-home.webp',
+    gallery: [
+      D('cbe-teacher-marks', 'Teacher view: subject marks, class mean and level distribution'),
+      P('cbe-parent-home', 'Parent portal home with progress and achievements'),
+      P('cbe-results', 'Learner results by learning area, live-updated'),
+      P('cbe-fees', 'Next year’s fee structure for the learner’s grade (sample figures)'),
+      P('cbe-newsletter', 'Newsletter and term dates for parents (sample data)'),
+      P('cbe-login', 'Role-based sign-in for parents and staff'),
+    ],
   },
   {
     slug: 'ecco',
@@ -60,9 +83,9 @@ export const projects: Project[] = [
     description:
       'A full rebuild of the ECCO website: clean reusable components, real SEO, full responsiveness and an M-Pesa membership flow. I maintain and update it monthly for the organisation.',
     highlights: [
-      'Migrated off a no-code builder to a maintainable codebase',
-      'M-Pesa membership payments flow',
-      'Ongoing monthly maintenance and content updates',
+      'Full English and Swahili versions, plus a chat assistant',
+      'Session booking, events, resources and M-Pesa donations',
+      'Migrated off a no-code builder; maintained monthly',
     ],
     technologies: ['TanStack Start', 'React', 'Supabase', 'Tailwind', 'M-Pesa'],
     category: 'Non-profit · Web',
@@ -71,6 +94,19 @@ export const projects: Project[] = [
     sourceUrl: 'https://github.com/ManuCoDesigns/EduCareer-Connect',
     domain: 'educareer-connect.org',
     featured: true,
+    cover: '/images/projects/ecco-home-sm.webp',
+    coverPhone: '/images/projects/ecco-mobile-home.webp',
+    gallery: [
+      D('ecco-home', 'Home page hero'),
+      D('ecco-quick-links', 'Next event and quick links'),
+      D('ecco-events', 'Events: mentorship programme'),
+      D('ecco-book', 'Book a guidance session'),
+      D('ecco-donate', 'Donations via M-Pesa'),
+      D('ecco-swahili', 'Full Swahili translation'),
+      D('ecco-chat', 'Built-in chat assistant (Swahili)'),
+      P('ecco-mobile-home', 'Mobile home page'),
+      P('ecco-mobile-menu', 'Mobile navigation'),
+    ],
   },
   {
     slug: 'extraction-platform',
@@ -89,20 +125,47 @@ export const projects: Project[] = [
     privateNote: 'Client work · private',
     domain: 'data-extraction-platform',
     featured: true,
+    cover: '/images/projects/dp-overview-sm.webp',
+    gallery: [
+      D('dp-report-cover', 'Auto-generated delivery report (demo data)'),
+      D('dp-overview', 'Overview: sources delivered and accuracy'),
+      D('dp-delivery', 'Delivery timeline across batches'),
+      D('dp-accuracy', 'How peer review lifts accuracy'),
+      D('dp-batch-timeline', 'One batch from pull to approval'),
+      D('dp-batches', 'Batches compared side by side'),
+    ],
   },
   {
     slug: 'prograde',
     title: 'ProGrade Elites',
-    tagline: 'Learning management system for a client',
+    tagline: 'Paid learning platform for a client',
     description:
-      'A standalone LMS with notes, exams and discussion posts. Accounts are created by admins only, and it is set up as a paid, subscription-based product.',
-    highlights: ['Notes, exams & discussions', 'Admin-managed accounts'],
-    technologies: ['React', 'Supabase', 'Vercel'],
+      'A subscription LMS with three portals: students read notes, sit timed quizzes and submit labs; instructors build quizzes and mark; admins manage users, plans and payments.',
+    highlights: [
+      'Daily, weekly and monthly plans paid with M-Pesa',
+      'Quiz builder, timed exams and a marking queue',
+      'Admin revenue reports and admin-only accounts',
+    ],
+    technologies: ['React', 'TypeScript', 'Supabase', 'M-Pesa', 'Vercel'],
     category: 'EdTech · LMS',
     accent: '#f59e0b',
     liveUrl: 'https://prograde-nu.vercel.app',
     domain: 'prograde-nu.vercel.app',
-    featured: false,
+    featured: true,
+    cover: '/images/projects/pg-cover-sm.webp',
+    gallery: [
+      D('pg-landing', 'Landing page'),
+      D('pg-pricing', 'Daily, weekly and monthly plans'),
+      D('pg-student-dashboard', 'Student dashboard: labs, quizzes, notes'),
+      D('pg-quiz-review', 'Quiz review with correct answers'),
+      D('pg-mpesa', 'Subscription checkout with M-Pesa'),
+      D('pg-instructor', 'Instructor dashboard'),
+      D('pg-quiz-builder', 'Quiz builder'),
+      D('pg-marking', 'Marking queue'),
+      D('pg-admin-payments', 'Admin: payments and revenue (demo data)'),
+      P('pg-mobile-dashboard', 'Mobile: lab schedule'),
+      P('pg-mobile-quiz', 'Mobile: quiz results'),
+    ],
   },
   {
     slug: 'hybrid-scanner',
@@ -119,8 +182,8 @@ export const projects: Project[] = [
     featured: false,
   },
   {
-    slug: 'stmarys-web',
-    title: "St. Mary's School Website",
+    slug: 'school-web',
+    title: 'School Website',
     tagline: 'Public website for a junior & senior school',
     description:
       "The school's public website: academic programmes, staff, news and admissions information, designed for parents browsing on their phones.",
@@ -128,8 +191,8 @@ export const projects: Project[] = [
     technologies: ['React', 'Tailwind', 'Vercel'],
     category: 'Education · Web',
     accent: '#38bdf8',
-    liveUrl: 'https://stmarysjssweb.vercel.app/',
-    domain: 'stmarysjssweb.vercel.app',
+    privateNote: 'Client site',
+    domain: 'school-website',
     featured: false,
   },
 ];
@@ -157,7 +220,7 @@ export const experience = [
   },
   {
     role: 'Sole Developer & Architect',
-    org: "St. Mary's CBE Pro",
+    org: 'CBE Pro · school management SaaS',
     period: '2025 — Present',
     accent: '#10b981',
     points: [
@@ -167,7 +230,7 @@ export const experience = [
   },
   {
     role: 'ICT & Computer Studies Teacher',
-    org: "St. Mary's Mixed Junior & Senior School, Bomet",
+    org: 'Junior & senior secondary school, Bomet County',
     period: 'Present',
     accent: '#f59e0b',
     points: [

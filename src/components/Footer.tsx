@@ -1,9 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Phone, MapPin, Github, MessageCircle, ArrowUp, ArrowUpRight, Code2 } from 'lucide-react';
+import { Mail, Phone, MapPin, Github, MessageCircle, ArrowUp, ArrowUpRight, Code2, Share2 } from 'lucide-react';
 import { contact, socials as links } from '../data/site';
 
-const Footer: React.FC = () => {
+const Footer: React.FC<{ onShare: () => void }> = ({ onShare }) => {
   const year = new Date().getFullYear();
   const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
 
@@ -59,6 +59,11 @@ const Footer: React.FC = () => {
             <a href={links.email} className="btn-primary justify-center text-sm py-3 px-5">
               <Mail className="w-4 h-4" /><span>Send an email</span>
             </a>
+            <button onClick={onShare}
+              className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-semibold text-sm border border-white/15 text-white/85 hover:bg-white/5 transition-colors"
+            >
+              <Share2 className="w-4 h-4" /> Share portfolio
+            </button>
           </div>
         </motion.div>
 
