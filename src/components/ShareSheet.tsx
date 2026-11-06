@@ -3,8 +3,12 @@ import { createPortal } from 'react-dom';
 import { motion } from 'framer-motion';
 import { X, Share2, Download, Link2, Check, Mail, MessageCircle, Send, Linkedin, Facebook, Smartphone } from 'lucide-react';
 
-const STATUS_IMAGE = '/share/manu-status.jpg';
-const STATUS_PREVIEW = '/share/manu-status-preview.webp';
+const DESIGNS = [
+  { id: 'status', label: 'Status', hint: 'WhatsApp status · Stories', src: '/share/manu-status.jpg', preview: '/share/manu-status-preview.webp', ratio: '9/16' },
+  { id: 'status-2', label: 'Status: projects', hint: 'WhatsApp status · Stories', src: '/share/manu-status-2.jpg', preview: '/share/manu-status-2-preview.webp', ratio: '9/16' },
+  { id: 'square', label: 'Square post', hint: 'WhatsApp · Facebook · Instagram', src: '/share/manu-square.jpg', preview: '/share/manu-square-preview.webp', ratio: '1/1' },
+  { id: 'wide', label: 'Wide post', hint: 'LinkedIn · X · Facebook', src: '/share/manu-wide.jpg', preview: '/share/manu-wide-preview.webp', ratio: '1200/627' },
+] as const;
 const SHARE_TEXT = 'Check out ManuWebDesigns: school systems, websites, M-Pesa payments and data platforms, built in Kenya by Manu.';
 
 const XLogo: React.FC<{ className?: string }> = ({ className }) => (
@@ -18,6 +22,8 @@ type Props = { onClose: () => void };
 const ShareSheet: React.FC<Props> = ({ onClose }) => {
   const [copied, setCopied] = useState(false);
   const [note, setNote] = useState<string | null>(null);
+  const [designId, setDesignId] = useState<(typeof DESIGNS)[number]['id']>('status');
+  const design = DESIGNS.find(d => d.id === designId)!;
   const closeRef = useRef<HTMLButtonElement>(null);
 
   const url = `${window.location.origin}/`;
@@ -50,7 +56,7 @@ const ShareSheet: React.FC<Props> = ({ onClose }) => {
 
   const download = () => {
     const a = document.createElement('a');
-    a.href = STATUS_IMAGE; a.download = 'manuwebdesigns-status.jpg';
+    a.href = design.src; a.download = `manuwebdesigns-${design.id}.jpg`;
     document.body.appendChild(a); a.click(); a.remove();
   };
 
@@ -58,8 +64,8 @@ const ShareSheet: React.FC<Props> = ({ onClose }) => {
   const postToStatus = async () => {
     setNote(null);
     try {
-      const blob = await (await fetch(STATUS_IMAGE)).blob();
-      const file = new File([blob], 'manuwebdesigns-status.jpg', { type: 'image/jpeg' });
+      const blob = await (await fetch(design.src)).blob();
+      const file = new File([blob], `manuwebdesigns-${design.id}.jpg`, { type: 'image/jpeg' });
       if (navigator.canShare?.({ files: [file] })) {
         await navigator.share({ files: [file], text: `${SHARE_TEXT} ${url}` });
         return;
@@ -68,7 +74,7 @@ const ShareSheet: React.FC<Props> = ({ onClose }) => {
       if ((e as DOMException)?.name === 'AbortError') return;
     }
     download();
-    setNote('Image saved. Open WhatsApp → Status → add it from your gallery.');
+    setNote(design.ratio === '9/16' ? 'Image saved. Open WhatsApp → Status → add it from your gallery.' : 'Image saved. Add it to your post from your gallery.');
   };
 
   const links = [
@@ -103,18 +109,37 @@ const ShareSheet: React.FC<Props> = ({ onClose }) => {
           ><X className="w-5 h-5" /></button>
         </div>
 
-        <div className="grid sm:grid-cols-[200px_1fr] gap-6 p-6">
-          {/* Status image */}
-          <div className="flex sm:block gap-4 items-center">
-            <img src={STATUS_PREVIEW} alt="Status image preview" width={360} height={640}
-              className="w-28 sm:w-full rounded-2xl border border-white/10 flex-shrink-0" />
-            <div className="sm:mt-3 space-y-2 flex-1">
-              <button onClick={postToStatus} className="btn-primary w-full justify-center text-sm py-2.5">
-                <Smartphone className="w-4 h-4 flex-shrink-0" /><span className="whitespace-nowrap">Post to status</span>
-              </button>
-              <button onClick={download}
-                className="w-full inline-flex items-center justify-center gap-2 text-sm py-2.5 rounded-xl border border-white/15 text-white/85 hover:bg-white/5"
-              ><Download className="w-4 h-4" />Download image</button>
+        <div className="grid sm:grid-cols-[230px_1fr] gap-6 p-6">
+          {/* Designs */}
+          <div>
+            <div className="font-mono-custom uppercase mb-3" style={{ fontSize: '0.7rem', letterSpacing: '0.14em', color: 'rgba(226,232,240,0.55)' }}>Pick a design</div>
+            <div className="grid grid-cols-4 gap-2 mb-3" role="radiogroup" aria-label="Share image designs">
+              {DESIGNS.map(d => (
+                <button key={d.id} role="radio" aria-checked={d.id === designId} aria-label={d.label}
+                  onClick={() => { setDesignId(d.id); setNote(null); }}
+                  className="rounded-lg overflow-hidden h-16 bg-black/30 flex items-center justify-center transition-all"
+                  style={{ outline: d.id === designId ? '2px solid #22d3ee' : '1px solid rgba(255,255,255,0.12)', opacity: d.id === designId ? 1 : 0.6 }}
+                >
+                  <img src={d.preview} alt="" className="max-h-full max-w-full object-contain" />
+                </button>
+              ))}
+            </div>
+            <div className="flex sm:block gap-4 items-start">
+              <img src={design.preview} alt={`${design.label} preview`}
+                className="w-32 sm:w-full rounded-2xl border border-white/10 flex-shrink-0 object-contain bg-black/30"
+                style={{ aspectRatio: design.ratio }} />
+              <div className="sm:mt-3 space-y-2 flex-1">
+                <div>
+                  <div className="text-sm font-semibold text-white">{design.label}</div>
+                  <div className="text-xs" style={{ color: 'rgba(226,232,240,0.6)' }}>{design.hint}</div>
+                </div>
+                <button onClick={postToStatus} className="btn-primary w-full justify-center text-sm py-2.5">
+                  <Smartphone className="w-4 h-4 flex-shrink-0" /><span className="whitespace-nowrap">{design.ratio === '9/16' ? 'Post to status' : 'Share image'}</span>
+                </button>
+                <button onClick={download}
+                  className="w-full inline-flex items-center justify-center gap-2 text-sm py-2.5 rounded-xl border border-white/15 text-white/85 hover:bg-white/5"
+                ><Download className="w-4 h-4" />Download</button>
+              </div>
             </div>
           </div>
 
