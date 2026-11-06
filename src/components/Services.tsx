@@ -1,59 +1,59 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Monitor, Smartphone, Database, Cloud, Zap, Shield, Code } from 'lucide-react';
+import { GraduationCap, Globe, Database, CreditCard, Workflow, Wrench, Code } from 'lucide-react';
 
 const Services: React.FC = () => {
   const services = [
     {
-      icon: Monitor,
-      title: 'Frontend Development',
-      description: 'Stunning, responsive interfaces that captivate users and drive engagement.',
-      features: ['React / Vue / Angular', 'Responsive Design', 'Performance Optimized', 'SEO Friendly'],
+      icon: GraduationCap,
+      title: 'School & Institution Systems',
+      description: 'Management systems built for Kenyan CBE schools, from marks to parent portals.',
+      features: ['Marks entry & report forms', 'Parent & student portals', 'Fees & library records', 'E-learning & online exams'],
+      gradient: 'linear-gradient(135deg, #10b981, #00d9f5)',
+      glow: 'rgba(16,185,129,0.2)',
+      accent: '#10b981',
+    },
+    {
+      icon: Globe,
+      title: 'Websites & Web Apps',
+      description: 'Fast, mobile-first websites and web apps for organisations and businesses.',
+      features: ['React / TypeScript', 'Responsive on every phone', 'SEO & social previews', 'Content you can update'],
       gradient: 'linear-gradient(135deg, #00d9f5, #7c3aed)',
       glow: 'rgba(0,217,245,0.2)',
       accent: '#00d9f5',
     },
     {
       icon: Database,
-      title: 'Backend Development',
-      description: 'Robust server-side solutions with scalable architecture and secure APIs.',
-      features: ['Node.js / Python', 'RESTful & GraphQL', 'Database Design', 'Authentication'],
-      gradient: 'linear-gradient(135deg, #10b981, #00d9f5)',
-      glow: 'rgba(16,185,129,0.2)',
-      accent: '#10b981',
-    },
-    {
-      icon: Smartphone,
-      title: 'Mobile-First Design',
-      description: 'Progressive web apps that work seamlessly across all devices.',
-      features: ['Progressive Web Apps', 'Cross-platform', 'Offline Support', 'App-like UX'],
+      title: 'Backend & APIs',
+      description: 'Secure databases, authentication and APIs that hold up as you grow.',
+      features: ['Supabase / PostgreSQL', 'FastAPI / Node.js', 'Roles & permissions', 'Performance tuning'],
       gradient: 'linear-gradient(135deg, #7c3aed, #f43f5e)',
       glow: 'rgba(124,58,237,0.2)',
       accent: '#7c3aed',
     },
     {
-      icon: Cloud,
-      title: 'Cloud Solutions',
-      description: 'Scalable cloud infrastructure and automated deployment strategies.',
-      features: ['AWS / Azure / GCP', 'CI/CD Pipelines', 'Containerization', 'Monitoring'],
+      icon: CreditCard,
+      title: 'M-Pesa & Payments',
+      description: 'Membership, fees and subscription payments that fit how Kenyans pay.',
+      features: ['M-Pesa payment flows', 'Daraja STK Push', 'Subscriptions & plans', 'Payment records'],
+      gradient: 'linear-gradient(135deg, #22c55e, #10b981)',
+      glow: 'rgba(34,197,94,0.2)',
+      accent: '#22c55e',
+    },
+    {
+      icon: Workflow,
+      title: 'Data Platforms & Automation',
+      description: 'Tools that turn documents and sources into clean, reviewed, structured data.',
+      features: ['Python extraction scripts', 'Review & QA workflows', 'Team dashboards', 'Reports & exports'],
       gradient: 'linear-gradient(135deg, #f97316, #f59e0b)',
       glow: 'rgba(249,115,22,0.2)',
       accent: '#f97316',
     },
     {
-      icon: Zap,
-      title: 'Performance Optimization',
-      description: 'Lightning-fast websites with surgical code optimization.',
-      features: ['Speed Optimization', 'Code Splitting', 'Caching Strategy', 'Core Web Vitals'],
-      gradient: 'linear-gradient(135deg, #f59e0b, #ef4444)',
-      glow: 'rgba(245,158,11,0.2)',
-      accent: '#f59e0b',
-    },
-    {
-      icon: Shield,
-      title: 'Security & Maintenance',
-      description: 'Hardened applications with ongoing support and proactive updates.',
-      features: ['Security Audits', 'Regular Updates', 'Backup Solutions', 'Uptime Monitoring'],
+      icon: Wrench,
+      title: 'Maintenance & Support',
+      description: 'Monthly updates, fixes and improvements so your site keeps working after launch.',
+      features: ['Monthly update rounds', 'Bug fixes & security', 'Hosting & domains', 'Plain-language reports'],
       gradient: 'linear-gradient(135deg, #6366f1, #7c3aed)',
       glow: 'rgba(99,102,241,0.2)',
       accent: '#6366f1',
@@ -84,7 +84,7 @@ const Services: React.FC = () => {
             </span>
           </h2>
           <p className="text-lg max-w-2xl mx-auto" style={{ color: 'rgba(226,232,240,0.5)', fontFamily:"'Cabinet Grotesk',sans-serif" }}>
-            Comprehensive web development solutions tailored to your unique business needs
+            From school systems to payments and data platforms: the things I build, and keep running
           </p>
         </motion.div>
 

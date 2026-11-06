@@ -14,18 +14,21 @@ const Hero: React.FC = () => {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d')!;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const count = window.innerWidth < 768 ? 40 : 90;
     const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
     resize();
     window.addEventListener('resize', resize);
     type P = { x: number; y: number; vx: number; vy: number; r: number; alpha: number; hue: number };
-    const particles: P[] = Array.from({ length: 90 }, () => ({
+    const particles: P[] = Array.from({ length: count }, () => ({
       x: Math.random() * canvas.width, y: Math.random() * canvas.height,
       vx: (Math.random() - 0.5) * 0.45, vy: (Math.random() - 0.5) * 0.45,
       r: Math.random() * 1.6 + 0.4, alpha: Math.random() * 0.5 + 0.15,
       hue: Math.random() > 0.5 ? 190 : 270,
     }));
-    let raf: number;
+    let raf = 0;
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       particles.forEach(p => {
@@ -44,10 +47,16 @@ const Hero: React.FC = () => {
           }
         }
       }
-      raf = requestAnimationFrame(draw);
+      if (!reduceMotion && !document.hidden) raf = requestAnimationFrame(draw);
     };
+    const onVisibility = () => { if (!document.hidden && !reduceMotion) { cancelAnimationFrame(raf); raf = requestAnimationFrame(draw); } };
+    document.addEventListener('visibilitychange', onVisibility);
     draw();
-    return () => { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); };
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener('resize', resize);
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
   }, []);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
@@ -68,8 +77,8 @@ const Hero: React.FC = () => {
   const codeLines = [
     { delay: 0.9, jsx: <><span style={{color:'#a78bfa'}}>const</span> <span style={{color:'#67e8f9'}}>developer</span> <span style={{color:'rgba(255,255,255,0.4)'}}>= {'{'}</span></> },
     { delay: 1.1, jsx: <><span className="pl-5" style={{color:'#6ee7b7'}}>name</span><span style={{color:'rgba(255,255,255,0.3)'}}>:</span> <span style={{color:'#fcd34d'}}>"Manu"</span><span style={{color:'rgba(255,255,255,0.3)'}}>,</span></> },
-    { delay: 1.3, jsx: <><span className="pl-5" style={{color:'#6ee7b7'}}>stack</span><span style={{color:'rgba(255,255,255,0.3)'}}>: [</span><span style={{color:'#fcd34d'}}>"React"</span><span style={{color:'rgba(255,255,255,0.3)'}}>, </span><span style={{color:'#fcd34d'}}>"Node"</span><span style={{color:'rgba(255,255,255,0.3)'}}>, </span><span style={{color:'#fcd34d'}}>"AI"</span><span style={{color:'rgba(255,255,255,0.3)'}}>],</span></> },
-    { delay: 1.5, jsx: <><span className="pl-5" style={{color:'#6ee7b7'}}>exp</span><span style={{color:'rgba(255,255,255,0.3)'}}>:</span> <span style={{color:'#fcd34d'}}>"3+ years"</span><span style={{color:'rgba(255,255,255,0.3)'}}>,</span></> },
+    { delay: 1.3, jsx: <><span className="pl-5" style={{color:'#6ee7b7'}}>stack</span><span style={{color:'rgba(255,255,255,0.3)'}}>: [</span><span style={{color:'#fcd34d'}}>"React"</span><span style={{color:'rgba(255,255,255,0.3)'}}>, </span><span style={{color:'#fcd34d'}}>"Supabase"</span><span style={{color:'rgba(255,255,255,0.3)'}}>, </span><span style={{color:'#fcd34d'}}>"FastAPI"</span><span style={{color:'rgba(255,255,255,0.3)'}}>],</span></> },
+    { delay: 1.5, jsx: <><span className="pl-5" style={{color:'#6ee7b7'}}>base</span><span style={{color:'rgba(255,255,255,0.3)'}}>:</span> <span style={{color:'#fcd34d'}}>"Kenya → anywhere"</span><span style={{color:'rgba(255,255,255,0.3)'}}>,</span></> },
     { delay: 1.7, jsx: <><span className="pl-5" style={{color:'#a78bfa'}}>build</span><span style={{color:'rgba(255,255,255,0.3)'}}>: () =&gt;</span> <span style={{color:'#67e8f9'}}>✦ magic</span></> },
     { delay: 1.9, jsx: <span style={{color:'rgba(255,255,255,0.5)'}}>{'};'}</span> },
   ];
@@ -133,7 +142,7 @@ const Hero: React.FC = () => {
               className="text-lg leading-relaxed max-w-md"
               style={{ color: 'rgba(226,232,240,0.5)', fontFamily:"'Cabinet Grotesk',sans-serif" }}
             >
-              Transforming visionary ideas into stunning digital experiences. Full-stack web applications that captivate users & drive extraordinary results.
+              I build school management systems, data platforms and fast, mobile-first websites, and take them from idea to production.
             </motion.p>
 
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.88 }}
@@ -215,7 +224,7 @@ const Hero: React.FC = () => {
                 </div>
 
                 <div className="grid grid-cols-3 border-t border-white/[0.06]">
-                  {[{ v: '50+', l: 'Projects' }, { v: '3+', l: 'Years' }, { v: '40+', l: 'Clients' }].map((s, i) => (
+                  {[{ v: '5+', l: 'Live Systems' }, { v: '3+', l: 'Years' }, { v: '24h', l: 'Reply Time' }].map((s, i) => (
                     <motion.div key={s.l} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 2.2 + i * 0.1 }}
                       className="text-center py-4 border-r border-white/[0.05] last:border-r-0 hover:bg-white/[0.02] transition-colors cursor-default"
                     >

@@ -1,17 +1,16 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import About from './components/About';
 import Services from './components/Services';
 import Portfolio from './components/Portfolio';
-import Testimonials from './components/Testimonials';
+import Experience from './components/Experience';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 
 function App() {
   return (
-    <motion.div 
+    <motion.main
       className="min-h-screen"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -22,10 +21,10 @@ function App() {
       <About />
       <Services />
       <Portfolio />
-      <Testimonials />
+      <Experience />
       <Contact />
       <Footer />
-    </motion.div>
+    </motion.main>
   );
 }
 

@@ -1,80 +1,62 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import emailjs from "@emailjs/browser";
+import { contact, socials } from "../data/site";
 import { Mail, Phone, MapPin, Send, CheckCircle, MessageCircle, Zap, Star } from 'lucide-react';
 
 const Contact: React.FC = () => {
   const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
   const [focused, setFocused] = useState<string | null>(null);
+  const isSubmitted = status === 'sent';
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+  const composedMessage = () =>
+    `Hi Manu,\n\nName: ${formData.name}\nEmail: ${formData.email}\nSubject: ${formData.subject}\n\n${formData.message}`;
 
-  const templateParams = {
-    name: formData.name,
-    email: formData.email,
-    subject: formData.subject,
-    message: formData.message,
+  const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID as string | undefined;
+  const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID as string | undefined;
+  const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY as string | undefined;
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // No EmailJS keys configured: fall back to the visitor's mail app.
+    if (!serviceId || !templateId || !publicKey) {
+      window.location.href = `mailto:${contact.email}?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(composedMessage())}`;
+      return;
+    }
+
+    setStatus('sending');
+    try {
+      await emailjs.send(serviceId, templateId, { ...formData }, { publicKey });
+      setStatus('sent');
+      setFormData({ name: '', email: '', subject: '', message: '' });
+      setTimeout(() => setStatus('idle'), 4000);
+    } catch (error) {
+      console.error('Error sending message:', error);
+      setStatus('error');
+    }
   };
 
-  try {
-    // 1️⃣ Send Email
-    await emailjs.send(
-      import.meta.env.VITE_EMAILJS_SERVICE_ID!,
-      import.meta.env.VITE_EMAILJS_TEMPLATE_ID!,
-      templateParams,
-      import.meta.env.VITE_EMAILJS_PUBLIC_KEY!
-    );
-
-    // 2️⃣ Open WhatsApp
-    const phoneNumber = "254714749123"; // ← PUT YOUR NUMBER (no +, no spaces)
-
-    const whatsappMessage = `
-New Website Message:
-
-Name: ${formData.name}
-Email: ${formData.email}
-Subject: ${formData.subject}
-
-Message:
-${formData.message}
-    `;
-
-    const encodedMessage = encodeURIComponent(whatsappMessage);
-
-    window.open(
-      `https://wa.me/${phoneNumber}?text=${encodedMessage}`,
-      "_blank"
-    );
-
-    // 3️⃣ Success animation
-    setIsSubmitted(true);
-    setTimeout(() => setIsSubmitted(false), 3500);
-
-    // 4️⃣ Reset form
-    setFormData({ name: "", email: "", subject: "", message: "" });
-
-  } catch (error) {
-    console.error("Error sending message:", error);
-    alert("Something went wrong. Please try again.");
-  }
-};
+  const whatsappHref = () =>
+    `https://wa.me/${contact.whatsapp}?text=${encodeURIComponent(
+      formData.message || formData.subject ? composedMessage() : "Hi Manu, I'd like to talk about a project."
+    )}`;
 
   const contactInfo = [
-    { icon: Mail, label: 'Email', value: 'manuwebdesigns@gmail.com', href: 'mailto:manuwebdesigns@gmail.com', accent: '#00d9f5' },
-    { icon: Phone, label: 'Phone', value: '+254 714 749 123', href: 'tel:+254 714 749 123', accent: '#10b981' },
-    { icon: MapPin, label: 'Location', value: 'Available Worldwide', href: '#', accent: '#7c3aed' },
+    { icon: Mail, label: 'Email', value: contact.email, href: socials.email, accent: '#00d9f5' },
+    { icon: Phone, label: 'Phone / WhatsApp', value: contact.phoneDisplay, href: `tel:${contact.phoneTel}`, accent: '#10b981' },
+    { icon: MapPin, label: 'Location', value: contact.location, href: undefined, accent: '#7c3aed' },
   ];
 
   const benefits = [
     { icon: Zap, text: 'Fast turnaround times', accent: '#f59e0b' },
-    { icon: Star, text: 'Competitive pricing', accent: '#00d9f5' },
+    { icon: Star, text: 'Clear, fair pricing', accent: '#00d9f5' },
     { icon: CheckCircle, text: 'Ongoing support', accent: '#10b981' },
-    { icon: MessageCircle, text: 'Modern technologies', accent: '#7c3aed' },
+    { icon: MessageCircle, text: 'Updates on WhatsApp', accent: '#7c3aed' },
   ];
 
   const inputStyle = (name: string) => ({
@@ -231,12 +213,12 @@ ${formData.message}
                 <div className="grid sm:grid-cols-2 gap-4">
                   {(['name', 'email'] as const).map((field) => (
                     <div key={field}>
-                      <label style={{ display:'block', marginBottom:'6px', fontSize:'0.75rem', fontWeight:600, fontFamily:"'Syne',sans-serif", color:'rgba(226,232,240,0.5)', textTransform:'uppercase', letterSpacing:'0.08em' }}>
+                      <label htmlFor={`f-${field}`} style={{ display:'block', marginBottom:'6px', fontSize:'0.75rem', fontWeight:600, fontFamily:"'Syne',sans-serif", color:'rgba(226,232,240,0.5)', textTransform:'uppercase', letterSpacing:'0.08em' }}>
                         {field === 'name' ? 'Full Name *' : 'Email *'}
                       </label>
                       <input
                         type={field === 'email' ? 'email' : 'text'}
-                        name={field} value={formData[field]}
+                        id={`f-${field}`} name={field} value={formData[field]}
                         onChange={handleChange} required
                         placeholder={field === 'name' ? 'Your name' : 'your@email.com'}
                         style={inputStyle(field)}
@@ -248,12 +230,12 @@ ${formData.message}
                 </div>
 
                 <div>
-                  <label style={{ display:'block', marginBottom:'6px', fontSize:'0.75rem', fontWeight:600, fontFamily:"'Syne',sans-serif", color:'rgba(226,232,240,0.5)', textTransform:'uppercase', letterSpacing:'0.08em' }}>
+                  <label htmlFor="f-subject" style={{ display:'block', marginBottom:'6px', fontSize:'0.75rem', fontWeight:600, fontFamily:"'Syne',sans-serif", color:'rgba(226,232,240,0.5)', textTransform:'uppercase', letterSpacing:'0.08em' }}>
                     Subject *
                   </label>
                   <input
-                    type="text" name="subject" value={formData.subject}
-                    onChange={handleChange} required placeholder="Web Development Project"
+                    type="text" id="f-subject" name="subject" value={formData.subject}
+                    onChange={handleChange} required placeholder="School system, website, payments…"
                     style={inputStyle('subject')}
                     onFocus={() => setFocused('subject')}
                     onBlur={() => setFocused(null)}
@@ -261,11 +243,11 @@ ${formData.message}
                 </div>
 
                 <div>
-                  <label style={{ display:'block', marginBottom:'6px', fontSize:'0.75rem', fontWeight:600, fontFamily:"'Syne',sans-serif", color:'rgba(226,232,240,0.5)', textTransform:'uppercase', letterSpacing:'0.08em' }}>
+                  <label htmlFor="f-message" style={{ display:'block', marginBottom:'6px', fontSize:'0.75rem', fontWeight:600, fontFamily:"'Syne',sans-serif", color:'rgba(226,232,240,0.5)', textTransform:'uppercase', letterSpacing:'0.08em' }}>
                     Project Details *
                   </label>
                   <textarea
-                    name="message" rows={5} value={formData.message}
+                    id="f-message" name="message" rows={5} value={formData.message}
                     onChange={handleChange} required
                     placeholder="Tell me about your project vision, goals, and requirements..."
                     style={{ ...inputStyle('message'), resize: 'none' }}
@@ -276,7 +258,7 @@ ${formData.message}
 
                 <motion.button
                   type="submit"
-                  disabled={isSubmitted}
+                  disabled={status === 'sending' || isSubmitted}
                   className="w-full btn-primary justify-center py-4 text-base disabled:opacity-60"
                   whileHover={{ scale: 1.02, y: -2 }}
                   whileTap={{ scale: 0.98 }}
@@ -294,12 +276,33 @@ ${formData.message}
                         className="flex items-center gap-2.5"
                       >
                         <Send className="w-4 h-4" />
-                        <span>Send Message</span>
+                        <span>{status === 'sending' ? 'Sending…' : 'Send Message'}</span>
                         <motion.span animate={{ x: [0, 4, 0] }} transition={{ duration: 1.4, repeat: Infinity }}>→</motion.span>
                       </motion.span>
                     )}
                   </AnimatePresence>
                 </motion.button>
+
+                <div aria-live="polite" className="min-h-[1.25rem] text-sm text-center">
+                  {status === 'error' && (
+                    <span style={{ color: '#f87171' }}>
+                      Couldn't send right now. Please try WhatsApp or email {contact.email}.
+                    </span>
+                  )}
+                  {status === 'sent' && <span style={{ color: '#34d399' }}>Thanks! I'll reply within 24 hours.</span>}
+                </div>
+
+                <div className="flex items-center gap-3 text-xs" style={{ color: 'rgba(226,232,240,0.35)' }}>
+                  <span className="flex-1 h-px bg-white/10" />or<span className="flex-1 h-px bg-white/10" />
+                </div>
+
+                <a href={whatsappHref()} target="_blank" rel="noopener noreferrer"
+                  className="w-full inline-flex items-center justify-center gap-2.5 py-3.5 rounded-xl font-semibold text-sm transition-transform hover:-translate-y-0.5"
+                  style={{ background: 'rgba(37,211,102,0.12)', border: '1px solid rgba(37,211,102,0.35)', color: '#4ade80' }}
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  Chat on WhatsApp
+                </a>
               </form>
             </div>
           </motion.div>

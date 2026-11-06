@@ -1,17 +1,18 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Phone, MapPin, Github, Linkedin, Twitter, Heart, ArrowUp } from 'lucide-react';
+import { Mail, Phone, MapPin, Github, MessageCircle, Heart, ArrowUp } from 'lucide-react';
+import { contact, socials as links } from '../data/site';
 
 const Footer: React.FC = () => {
   const year = new Date().getFullYear();
 
   const socials = [
-    { icon: Github, href: '#', label: 'GitHub', accent: '#e2e8f0' },
-    { icon: Linkedin, href: '#', label: 'LinkedIn', accent: '#0ea5e9' },
-    { icon: Twitter, href: '#', label: 'Twitter', accent: '#38bdf8' },
+    { icon: Github, href: links.github, label: 'GitHub', accent: '#e2e8f0' },
+    { icon: MessageCircle, href: links.whatsapp, label: 'WhatsApp', accent: '#25d366' },
+    { icon: Mail, href: links.email, label: 'Email', accent: '#00d9f5' },
   ];
 
-  const quickLinks = ['About', 'Services', 'Portfolio', 'Contact'];
+  const quickLinks = ['About', 'Services', 'Portfolio', 'Experience', 'Contact'];
 
   const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
 
@@ -63,12 +64,12 @@ const Footer: React.FC = () => {
             </motion.button>
 
             <p className="text-sm leading-relaxed max-w-sm" style={{ color: 'rgba(226,232,240,0.4)', fontFamily:"'Cabinet Grotesk',sans-serif" }}>
-              Transforming ideas into powerful digital experiences. Full-stack web development services that drive results and exceed expectations.
+              Full-stack developer building school systems, data platforms and websites that people rely on every day. Based in Kenya, working with clients anywhere.
             </p>
 
             <div className="flex gap-3">
               {socials.map((s, i) => (
-                <motion.a key={i} href={s.href} aria-label={s.label}
+                <motion.a key={i} href={s.href} aria-label={s.label} target="_blank" rel="noopener noreferrer"
                   className="w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300"
                   style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
                   whileHover={{ scale: 1.1, y: -3, borderColor: s.accent, backgroundColor: `${s.accent}12`, color: s.accent }}
@@ -125,9 +126,9 @@ const Footer: React.FC = () => {
             </h3>
             <div className="space-y-4">
               {[
-                { icon: Mail, value: 'manuwebdesigns@gmail.com', href: 'mailto:manuwebdesigns@gmail.com', accent: '#00d9f5' },
-                { icon: Phone, value: '+254 714 749 123', href: 'tel:+254 714 749 123', accent: '#10b981' },
-                { icon: MapPin, value: 'Available Worldwide', href: '#', accent: '#7c3aed' },
+                { icon: Mail, value: contact.email, href: links.email, accent: '#00d9f5' },
+                { icon: Phone, value: contact.phoneDisplay, href: `tel:${contact.phoneTel}`, accent: '#10b981' },
+                { icon: MapPin, value: contact.location, href: undefined, accent: '#7c3aed' },
               ].map((item, i) => (
                 <motion.a key={i} href={item.href}
                   initial={{ opacity: 0, x: -12 }} whileInView={{ opacity: 1, x: 0 }}
@@ -170,6 +171,7 @@ const Footer: React.FC = () => {
 
           {/* Back to top */}
           <motion.button
+            aria-label="Back to top"
             onClick={() => scrollTo('home')}
             className="w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-300"
             style={{ background: 'rgba(0,217,245,0.1)', border: '1px solid rgba(0,217,245,0.2)', color: '#00d9f5' }}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 
@@ -12,7 +12,7 @@ const Header: React.FC = () => {
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 30);
-      const sections = ['home', 'about', 'services', 'portfolio', 'contact'];
+      const sections = ['home', 'about', 'services', 'portfolio', 'experience', 'contact'];
       for (const id of sections.reverse()) {
         const el = document.getElementById(id);
         if (el && window.scrollY >= el.offsetTop - 120) {
@@ -34,7 +34,8 @@ const Header: React.FC = () => {
     { name: 'Home', id: 'home' },
     { name: 'About', id: 'about' },
     { name: 'Services', id: 'services' },
-    { name: 'Portfolio', id: 'portfolio' },
+    { name: 'Work', id: 'portfolio' },
+    { name: 'Experience', id: 'experience' },
     { name: 'Contact', id: 'contact' },
   ];
 

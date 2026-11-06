@@ -1,22 +1,19 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Award, Clock, Heart, Code, Rocket, Zap } from 'lucide-react';
+import { Award, Clock, GraduationCap, Code, Rocket, Zap, Layout, Server, Cloud } from 'lucide-react';
 
 const About: React.FC = () => {
   const stats = [
-    { icon: Award, label: 'Projects Done', value: '50+', color: '#f59e0b', glow: 'rgba(245,158,11,0.3)' },
+    { icon: Award, label: 'Live Systems', value: '5+', color: '#f59e0b', glow: 'rgba(245,158,11,0.3)' },
     { icon: Clock, label: 'Years Exp.', value: '3+', color: '#00d9f5', glow: 'rgba(0,217,245,0.3)' },
-    { icon: Heart, label: 'Happy Clients', value: '40+', color: '#f43f5e', glow: 'rgba(244,63,94,0.3)' },
+    { icon: GraduationCap, label: 'Research Track', value: 'M.Sc.', color: '#f43f5e', glow: 'rgba(244,63,94,0.3)' },
     { icon: Zap, label: 'Coffee Cups', value: '∞', color: '#10b981', glow: 'rgba(16,185,129,0.3)' },
   ];
 
-  const skills = [
-    { name: 'React', level: 95, color: '#00d9f5' },
-    { name: 'Node.js', level: 90, color: '#10b981' },
-    { name: 'TypeScript', level: 88, color: '#7c3aed' },
-    { name: 'Python', level: 85, color: '#f59e0b' },
-    { name: 'MongoDB', level: 82, color: '#10b981' },
-    { name: 'AWS', level: 80, color: '#f97316' },
+  const stack = [
+    { icon: Layout, title: 'Frontend', color: '#00d9f5', items: ['React', 'TypeScript', 'Vite', 'Tailwind CSS', 'TanStack Start', 'Framer Motion'] },
+    { icon: Server, title: 'Backend & Data', color: '#10b981', items: ['Supabase', 'PostgreSQL', 'FastAPI', 'Python', 'Node.js', 'REST APIs'] },
+    { icon: Cloud, title: 'Delivery & Integrations', color: '#7c3aed', items: ['Vercel', 'Railway', 'Git & GitHub', 'M-Pesa payments', 'EmailJS', 'SEO'] },
   ];
 
   const sectionIn = { hidden: { opacity: 0, y: 40 }, visible: { opacity: 1, y: 0 } };
@@ -48,7 +45,7 @@ const About: React.FC = () => {
             <span className="text-transparent bg-clip-text" style={{ backgroundImage: 'linear-gradient(135deg,#00d9f5,#7c3aed)' }}>Behind the Code</span>
           </h2>
           <p className="text-lg max-w-2xl mx-auto" style={{ color: 'rgba(226,232,240,0.5)', fontFamily:"'Cabinet Grotesk',sans-serif" }}>
-            Passionate full-stack developer on a mission to craft exceptional digital experiences
+            Developer, technical lead and educator who builds software people rely on
           </p>
         </motion.div>
 
@@ -71,10 +68,10 @@ const About: React.FC = () => {
               <p className="text-base leading-relaxed" style={{ color: 'rgba(226,232,240,0.65)', fontFamily:"'Cabinet Grotesk',sans-serif" }}>
                 Hi! I'm{' '}
                 <span className="font-bold text-transparent bg-clip-text" style={{ backgroundImage: 'linear-gradient(135deg,#00d9f5,#7c3aed)' }}>Manu</span>
-                , a full-stack web developer with over 3 years of experience crafting digital solutions that make a difference. I specialize in creating modern, responsive applications using cutting-edge technologies.
+                , a full-stack developer based in Kenya with 3+ years of experience. I build school management systems, data platforms and websites for real organisations, and I see them through from the first conversation to daily use.
               </p>
               <p className="text-base leading-relaxed" style={{ color: 'rgba(226,232,240,0.5)', fontFamily:"'Cabinet Grotesk',sans-serif" }}>
-                My journey started with curiosity about how websites work, evolving into a passion for seamless user experiences and robust backend systems. I believe great code is elegant, maintainable, and scalable.
+                I also teach Computer Studies and work as a technical lead on a data platform. That mix keeps me practical: I build for people who use software on their phones, under real deadlines, and who need it to just work.
               </p>
             </motion.div>
 
@@ -82,48 +79,28 @@ const About: React.FC = () => {
             <motion.div variants={sectionIn} transition={{ duration: 0.7 }} className="space-y-5">
               <div className="flex items-center gap-3">
                 <Code className="w-5 h-5" style={{ color: '#00d9f5' }} />
-                <h3 className="font-display font-bold text-xl text-white">Technical Skills</h3>
+                <h3 className="font-display font-bold text-xl text-white">Tech I Work With</h3>
               </div>
 
-              <div className="space-y-4">
-                {skills.map((skill, i) => (
-                  <motion.div key={skill.name}
-                    initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }} transition={{ delay: i * 0.08, duration: 0.6 }}
-                    className="group"
+              <div className="grid sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3 gap-4">
+                {stack.map((group, i) => (
+                  <motion.div key={group.title}
+                    initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }} transition={{ delay: i * 0.1, duration: 0.5 }}
+                    className="rounded-2xl p-5"
+                    style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${group.color}25` }}
                   >
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm font-semibold text-white/80" style={{ fontFamily:"'Syne',sans-serif" }}>{skill.name}</span>
-                      <span style={{ fontFamily:"'DM Mono',monospace", fontSize:'0.72rem', color: skill.color }}>{skill.level}%</span>
+                    <div className="flex items-center gap-2 mb-3">
+                      <group.icon className="w-4 h-4" style={{ color: group.color }} />
+                      <h4 className="font-display font-bold text-sm text-white">{group.title}</h4>
                     </div>
-                    <div className="skill-track">
-                      {/* Track glow */}
-                      <div className="absolute inset-0 rounded-full" style={{ background: `${skill.color}10` }} />
-                      <motion.div
-                        className="h-full rounded-full relative overflow-hidden"
-                        initial={{ width: 0 }}
-                        whileInView={{ width: `${skill.level}%` }}
-                        viewport={{ once: true }}
-                        transition={{ delay: i * 0.08 + 0.4, duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-                        style={{ background: `linear-gradient(90deg, ${skill.color}cc, ${skill.color})` }}
-                      >
-                        {/* Shimmer */}
-                        <motion.div
-                          className="absolute inset-0 w-1/3"
-                          style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)' }}
-                          animate={{ x: ['-100%', '400%'] }}
-                          transition={{ duration: 2, delay: i * 0.08 + 1.5, repeat: Infinity, repeatDelay: 3 }}
-                        />
-                      </motion.div>
-                      {/* Dot cap */}
-                      <motion.div
-                        className="absolute top-1/2 -translate-y-1/2 w-3 h-3 rounded-full border-2"
-                        initial={{ left: 0 }}
-                        whileInView={{ left: `calc(${skill.level}% - 6px)` }}
-                        viewport={{ once: true }}
-                        transition={{ delay: i * 0.08 + 0.4, duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-                        style={{ background: skill.color, borderColor: 'var(--c-surface)', boxShadow: `0 0 8px ${skill.color}` }}
-                      />
+                    <div className="flex flex-wrap gap-1.5">
+                      {group.items.map(item => (
+                        <span key={item} className="font-mono-custom" style={{
+                          padding: '3px 9px', borderRadius: 999, fontSize: '0.68rem',
+                          background: `${group.color}10`, border: `1px solid ${group.color}25`, color: 'rgba(226,232,240,0.75)',
+                        }}>{item}</span>
+                      ))}
                     </div>
                   </motion.div>
                 ))}
@@ -179,7 +156,7 @@ const About: React.FC = () => {
                 <h3 className="font-display font-black text-2xl text-white mb-1">Manu</h3>
                 <p className="text-sm font-semibold mb-1 text-transparent bg-clip-text"
                   style={{ backgroundImage: 'linear-gradient(135deg,#00d9f5,#7c3aed)' }}>
-                  Full Stack Developer
+                  Full Stack Developer · Tech Lead
                 </p>
                 <p style={{ fontFamily:"'DM Mono',monospace", fontSize:'0.72rem', color:'rgba(255,255,255,0.3)' }}>
                   Building the web, one line at a time
@@ -202,7 +179,7 @@ const About: React.FC = () => {
 
                 {/* Tags */}
                 <div className="flex flex-wrap gap-2 justify-center">
-                  {['React', 'Node.js', 'TypeScript', 'AWS'].map((t) => (
+                  {['React', 'TypeScript', 'Supabase', 'FastAPI'].map((t) => (
                     <span key={t} className="tag-pill">{t}</span>
                   ))}
                 </div>
